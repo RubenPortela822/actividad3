@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat en Tiempo Real</title>
+    <title>Chat Activadad 3</title>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <!-- Estilos para que se vea mas adecuado y estetico -->
     <style>
         body {
             background-color: #f8f9fa;
         }
+
         .chat-container {
             max-width: 500px;
             margin: 50px auto;
@@ -18,12 +21,14 @@
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
+
         #messages {
             list-style: none;
             padding: 0;
             max-height: 300px;
             overflow-y: auto;
         }
+
         .message-item {
             background: #e9ecef;
             padding: 10px;
@@ -32,13 +37,14 @@
         }
     </style>
 </head>
+
 <body>
+    <!-- Estructura del formulario para la caja de texto del chat -->
     <div class="container">
         <div class="chat-container">
-            <h3 class="text-center">Chat en Tiempo Real</h3>
+            <h3 class="text-center">Chat Activdad 3</h3>
             <div class="mb-3">
-                <input id="roomInput" type="text" class="form-control" placeholder="Nombre de la sala" value="sala1">
-                <button class="btn btn-primary mt-2 w-100" onclick="joinRoom()">Unirse a la Sala</button>
+                <button class="btn btn-primary mt-2 w-100" onclick="joinRoom()">Unirse a la conversación</button>
             </div>
             <ul id="messages" class="p-2 border rounded"></ul>
             <div class="input-group mt-3">
@@ -47,21 +53,23 @@
             </div>
         </div>
     </div>
-    
-    <script>
-        const socket = io("http://localhost:3000");
-        let currentRoom = "sala1";
 
+    <!-- Metodos para el envio y recepcion de los mensajes -->
+    <script>
+        // Se instancia la url del backend que emitirar los mensajes y tambien una sala por defecto
+        const socket = io("http://localhost:3000");
+        let currentRoom = "Arquitectura de software";
+
+        // funcion que manda la suscripcion a la sala escrita o a la que dejamos por defecto. 
+        // Tambien se escribe en pantalla cuando haya ingresado a la sala y los demas participantes veran el mensaje
         function joinRoom() {
-            const room = document.getElementById("roomInput").value;
-            if (room.trim() !== "") {
-                currentRoom = room;
-                socket.emit("joinRoom", room);
-                document.getElementById("messages").innerHTML = "";
-                appendMessage(`Te uniste a la sala: ${room}`, true);
-            }
+            room = currentRoom ;
+            socket.emit("joinRoom", room);
+            document.getElementById("messages").innerHTML = "";
+            appendMessage(`Te uniste a la sala: ${room}`, true);
         }
 
+        // Se obtiene el contenido de la caja de texto y se emite al evento encargado de emitirlo a los demas participantes de la sala
         function sendMessage() {
             const message = document.getElementById("messageInput").value;
             if (message.trim() !== "") {
@@ -70,10 +78,12 @@
             }
         }
 
+        // este es el listener que esta al tanto de cuando el backend emita un nuevo mensaje
         socket.on("message", (msg) => {
             appendMessage(msg);
         });
 
+        // esta es la funcion encargada de agregar el mensaje a la estructura html
         function appendMessage(msg, isSystem = false) {
             const li = document.createElement("li");
             li.textContent = msg;
@@ -83,4 +93,5 @@
         }
     </script>
 </body>
+
 </html>
