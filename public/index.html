@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat en Tiempo Real</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .chat-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        #messages {
+            list-style: none;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .message-item {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chat-container">
+            <h3 class="text-center">Chat en Tiempo Real</h3>
+            <div class="mb-3">
+                <input id="roomInput" type="text" class="form-control" placeholder="Nombre de la sala" value="sala1">
+                <button class="btn btn-primary mt-2 w-100" onclick="joinRoom()">Unirse a la Sala</button>
+            </div>
+            <ul id="messages" class="p-2 border rounded"></ul>
+            <div class="input-group mt-3">
+                <input id="messageInput" type="text" class="form-control" placeholder="Escribe un mensaje...">
+                <button class="btn btn-success" onclick="sendMessage()">Enviar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const socket = io("http://localhost:3000");
+        let currentRoom = "sala1";
+
+        function joinRoom() {
+            const room = document.getElementById("roomInput").value;
+            if (room.trim() !== "") {
+                currentRoom = room;
+                socket.emit("joinRoom", room);
+                document.getElementById("messages").innerHTML = "";
+                appendMessage(`Te uniste a la sala: ${room}`, true);
+            }
+        }
+
+        function sendMessage() {
+            const message = document.getElementById("messageInput").value;
+            if (message.trim() !== "") {
+                socket.emit("message", { room: currentRoom, message });
+                document.getElementById("messageInput").value = "";
+            }
+        }
+
+        socket.on("message", (msg) => {
+            appendMessage(msg);
+        });
+
+        function appendMessage(msg, isSystem = false) {
+            const li = document.createElement("li");
+            li.textContent = msg;
+            li.classList.add("message-item");
+            if (isSystem) li.style.fontStyle = "italic";
+            document.getElementById("messages").appendChild(li);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+node_modules/
+.env
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+public/uploads/
+.DS_Store
+*.swp
+.idea/
+.vscode/
+*.bak
+coverage/
+# Logs
+logs
+*.log
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS files
+Thumbs.db
