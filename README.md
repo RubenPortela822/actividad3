@@ -1,6 +1,6 @@
 # 💬 Aplicación de Chat en Tiempo Real
 
-Este proyecto es una aplicación de chat interno en tiempo real, desarrollada como solución de comunicación entre los miembros del equipo de trabajo de Don Parca. Utiliza WebSockets para una comunicación bidireccional eficiente y MongoDB para persistencia de datos.
+Este proyecto es una aplicación de chat interno en tiempo real, desarrollada como solución de comunicación entre los miembros del equipo de trabajo de Ruben Castañeda. Utiliza WebSockets para una comunicación bidireccional eficiente y MongoDB para persistencia de datos.
 
 ## 🚀 Tecnologías Utilizadas
 
@@ -73,7 +73,7 @@ El servidor correrá en [http://localhost:3000](http://localhost:3000)
 
 ## ✨ Créditos
 
-Aplicación desarrollada por y para el equipo de trabajo de **Don Parca** 🦴 como parte de actividades académicas de arquitectura de software.
+Aplicación desarrollada por y para el equipo de trabajo de **Ruben Castañeda** 🦴 como parte de actividades académicas de arquitectura de software.
 
 ---
 
