@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat general</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #chat {
+            border: 1px solid #ccc;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .msg {
+            margin: 5px 0;
+        }
+        .timestamp {
+            color: #999;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8">
+                <h2 class="text-center mb-4">Chat General</h2>
+                <div id="chat"></div>
+                <form id="messageForm" class="form-inline">
+                    <input type="text" id="messageInput" class="form-control mr-2" placeholder="Escribí un mensaje..." autocomplete="off" required>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+                <button id="logoutBtn" class="btn btn-danger mt-3">Cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const token = localStorage.getItem('token');
+        console.log(token);
+        
+
+        if (!token) {
+            alert('No estás autenticado. Volviendo al login.');
+            window.location.href = 'login.html';
+        }
+
+        const socket = io({
+            auth: {
+                token: token
+            }
+        });
+
+        const chat = document.getElementById('chat');
+        const form = document.getElementById('messageForm');
+        const input = document.getElementById('messageInput');
+
+        // Mostrar historial
+        socket.on('chatHistory', (messages) => {
+            messages.forEach(msg => renderMessage(msg));
+        });
+
+        // Mostrar nuevos mensajes
+        socket.on('message', (msg) => {           
+            renderMessage(msg);
+        });
+
+        // Enviar mensaje
+        form.addEventListener('submit', (e) => {
+            console.log('envio');
+            
+            e.preventDefault();
+            const message = input.value.trim();
+            if (message) {
+                socket.emit('message', message);
+                input.value = '';
+            }
+        });
+
+        // Cerrar sesión
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        });
+
+        // Mostrar mensajes en el chat
+        function renderMessage(msg) {
+            console.log(msg);
+            
+            const div = document.createElement('div');
+            div.classList.add('msg');
+            div.innerHTML = `<strong>${msg.user.username}</strong>: ${msg.content} <span class="timestamp">(${new Date(msg.timestamp).toLocaleTimeString()})</span>`;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>
